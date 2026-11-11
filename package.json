@@ -1,0 +1,25 @@
+{
+  "name": "qiosk",
+  "version": "1.0.0",
+  "description": "Self-order kiosk for a Turkish restaurant (shawarma, kebab, cheesy box, baklava)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --windowed",
+    "test": "node --test",
+    "dist": "electron-builder"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.qiosk.kiosk",
+    "productName": "Qiosk",
+    "files": ["main.js", "preload.js", "src/**", "renderer/**", "data/**", "config.json"],
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage" },
+    "mac": { "target": "dmg" }
+  }
+}

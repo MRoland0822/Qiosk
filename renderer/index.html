@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qiosk</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- 1. Welcome / attract screen -->
+    <section id="screen-welcome" class="screen active" data-action="start">
+      <div class="welcome-bg" aria-hidden="true">
+        <span>🌯</span><span>🥙</span><span>🧀</span><span>🍯</span><span>🍢</span><span>🥤</span>
+      </div>
+      <div class="welcome-content">
+        <div class="brand-mark">☪︎</div>
+        <h1 class="restaurant-name" data-bind="restaurantName"></h1>
+        <p class="welcome-sub" data-i18n="welcomeSub"></p>
+        <button class="btn btn-primary btn-huge pulse" data-action="start" data-i18n="touchToOrder"></button>
+        <div class="lang-switch" role="group">
+          <button class="lang-btn" data-lang="ro">🇷🇴 Română</button>
+          <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Eat in / take away -->
+    <section id="screen-dining" class="screen">
+      <h2 class="screen-title" data-i18n="whereEat"></h2>
+      <div class="dining-options">
+        <button class="dining-card" data-dining="eat-in">
+          <span class="dining-icon">🍽️</span>
+          <span data-i18n="eatIn"></span>
+        </button>
+        <button class="dining-card" data-dining="take-away">
+          <span class="dining-icon">🛍️</span>
+          <span data-i18n="takeAway"></span>
+        </button>
+      </div>
+      <button class="btn btn-ghost" data-action="cancel" data-i18n="back"></button>
+    </section>
+
+    <!-- 3. Menu -->
+    <section id="screen-menu" class="screen">
+      <header class="topbar">
+        <div class="topbar-brand"><span class="brand-mark small">☪︎</span><span data-bind="restaurantName"></span></div>
+        <div class="topbar-right">
+          <span class="dining-badge" id="dining-badge"></span>
+          <button class="lang-btn small" data-lang-toggle></button>
+          <button class="btn btn-ghost small" data-action="cancel" data-i18n="cancelOrder"></button>
+        </div>
+      </header>
+      <div class="menu-layout">
+        <nav class="category-rail" id="category-rail"></nav>
+        <main class="product-area">
+          <h2 class="category-title" id="category-title"></h2>
+          <div class="product-grid" id="product-grid"></div>
+        </main>
+      </div>
+      <footer class="cart-bar" id="cart-bar">
+        <div class="cart-bar-info">
+          <span class="cart-count" id="cart-count">0</span>
+          <div>
+            <div class="cart-bar-label" data-i18n="yourOrder"></div>
+            <div class="cart-bar-total" id="cart-bar-total"></div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-large" data-action="review" id="btn-review" data-i18n="viewOrder"></button>
+      </footer>
+    </section>
+
+    <!-- 4. Review order -->
+    <section id="screen-review" class="screen">
+      <header class="topbar">
+        <button class="btn btn-ghost small" data-action="back-to-menu" data-i18n="addMore"></button>
+        <h2 class="topbar-title" data-i18n="reviewTitle"></h2>
+        <span></span>
+      </header>
+      <div class="review-list" id="review-list"></div>
+      <footer class="review-footer">
+        <div class="review-summary">
+          <div class="summary-row"><span data-i18n="kcalTotal"></span><span id="review-kcal"></span></div>
+          <div class="summary-row total"><span data-i18n="total"></span><span id="review-total"></span></div>
+        </div>
+        <button class="btn btn-primary btn-huge" data-action="pay" id="btn-pay" data-i18n="payNow"></button>
+      </footer>
+    </section>
+
+    <!-- 5. Confirmation -->
+    <section id="screen-done" class="screen">
+      <div class="done-content">
+        <div class="done-check">✓</div>
+        <h2 data-i18n="thankYou"></h2>
+        <p class="done-label" data-i18n="orderNumber"></p>
+        <div class="order-number" id="done-number"></div>
+        <p class="done-pay"><span data-i18n="amountToPay"></span> <strong id="done-total"></strong></p>
+        <p class="done-hint" data-i18n="doneHint"></p>
+        <button class="btn btn-primary btn-large" data-action="finish" data-i18n="newOrder"></button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Product customisation dialog -->
+  <div class="modal-backdrop" id="product-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" data-action="close-modal" aria-label="Close">✕</button>
+      <div class="modal-hero">
+        <span class="modal-icon" id="pm-icon"></span>
+        <div>
+          <h2 id="pm-name"></h2>
+          <p id="pm-desc"></p>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="pm-meat-section">
+          <h3 data-i18n="chooseMeat"></h3>
+          <div class="option-grid" id="pm-meats"></div>
+        </div>
+        <div id="pm-extra-section">
+          <h3 data-i18n="extras"></h3>
+          <div class="option-grid" id="pm-extras"></div>
+        </div>
+        <h3 data-i18n="nutrition"></h3>
+        <div class="nutrition" id="pm-nutrition"></div>
+        <p class="allergens" id="pm-allergens"></p>
+      </div>
+      <div class="modal-footer">
+        <div class="qty">
+          <button class="qty-btn" data-action="qty-minus" aria-label="-">−</button>
+          <span id="pm-qty">1</span>
+          <button class="qty-btn" data-action="qty-plus" aria-label="+">+</button>
+        </div>
+        <button class="btn btn-primary btn-large" data-action="add-to-order">
+          <span id="pm-add-label"></span> · <span id="pm-price"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- "Are you still there?" dialog -->
+  <div class="modal-backdrop" id="idle-modal" hidden>
+    <div class="modal small">
+      <h2 data-i18n="stillThere"></h2>
+      <p><span data-i18n="resetIn"></span> <strong id="idle-count"></strong></p>
+      <button class="btn btn-primary btn-large" data-action="still-here" data-i18n="yesContinue"></button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../src/pricing.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

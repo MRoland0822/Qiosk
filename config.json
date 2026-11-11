@@ -1,0 +1,8 @@
+{
+  "restaurantName": "Istanbul Grill",
+  "ordersDir": "orders",
+  "fileLanguage": "en",
+  "currency": "lei",
+  "kiosk": true,
+  "idleTimeoutSeconds": 90
+}

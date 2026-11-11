@@ -1,0 +1,226 @@
+{
+  "meats": [
+    { "id": "chicken",      "name": { "ro": "Pui",              "en": "Chicken" },          "price": 0, "kcal": 0,   "protein": 0,  "fat": 0 },
+    { "id": "beef",         "name": { "ro": "Vită",             "en": "Beef" },             "price": 4, "kcal": 45,  "protein": 2,  "fat": 5 },
+    { "id": "lamb",         "name": { "ro": "Berbecuț",         "en": "Lamb" },             "price": 7, "kcal": 90,  "protein": 1,  "fat": 10 },
+    { "id": "chicken-beef", "name": { "ro": "Pui + Vită",     "en": "Chicken + Beef" }, "price": 2, "kcal": 25,  "protein": 1,  "fat": 3 },
+    { "id": "chicken-lamb", "name": { "ro": "Pui + Berbecuț", "en": "Chicken + Lamb" }, "price": 4, "kcal": 45,  "protein": 1,  "fat": 5 },
+    { "id": "beef-lamb",    "name": { "ro": "Vită + Berbecuț", "en": "Beef + Lamb" },   "price": 6, "kcal": 70,  "protein": 2,  "fat": 8 }
+  ],
+
+  "extras": [
+    { "id": "extra-cheese", "name": { "ro": "Extra cașcaval",    "en": "Extra cheese" },       "price": 4, "kcal": 110 },
+    { "id": "extra-meat",   "name": { "ro": "Extra carne",       "en": "Extra meat" },         "price": 8, "kcal": 150 },
+    { "id": "spicy",        "name": { "ro": "Sos picant",        "en": "Spicy sauce" },        "price": 0, "kcal": 15 },
+    { "id": "extra-garlic", "name": { "ro": "Extra sos usturoi", "en": "Extra garlic sauce" }, "price": 2, "kcal": 90 },
+    { "id": "no-onion",     "name": { "ro": "Fără ceapă",        "en": "No onion" },           "price": 0, "kcal": 0 }
+  ],
+
+  "categories": [
+    { "id": "shawarma", "icon": "🌯", "name": { "ro": "Shaorma",    "en": "Shawarma" } },
+    { "id": "kebab",    "icon": "🥙", "name": { "ro": "Kebab",      "en": "Kebab" } },
+    { "id": "cheesebox","icon": "🧀", "name": { "ro": "Cheesy Box", "en": "Cheesy Box" } },
+    { "id": "sides",    "icon": "🍟", "name": { "ro": "Garnituri",  "en": "Sides" } },
+    { "id": "desserts", "icon": "🍯", "name": { "ro": "Deserturi",  "en": "Desserts" } },
+    { "id": "drinks",   "icon": "🥤", "name": { "ro": "Băuturi",    "en": "Drinks" } }
+  ],
+
+  "products": [
+    {
+      "id": "shawarma", "category": "shawarma", "icon": "🌯", "price": 26, "popular": true,
+      "meatChoice": true, "extras": true,
+      "name": { "ro": "Shaorma", "en": "Shawarma" },
+      "description": {
+        "ro": "Lipie subțire cu carne la rotisor, cartofi prăjiți, roșii, castraveți murați, varză și sos de usturoi.",
+        "en": "Thin flatbread with spit-roasted meat, fries, tomatoes, pickles, cabbage and garlic sauce."
+      },
+      "nutrition": { "weight": 450, "kcal": 780, "protein": 38, "carbs": 82, "fat": 32 },
+      "allergens": ["gluten", "egg", "milk"]
+    },
+    {
+      "id": "cheesy-shawarma", "category": "shawarma", "icon": "🧀", "price": 30, "popular": true,
+      "meatChoice": true, "extras": true,
+      "name": { "ro": "Cheesy Shaorma", "en": "Cheesy Shawarma" },
+      "description": {
+        "ro": "Shaorma clasică cu cașcaval topit și sos de brânză cheddar, rumenită pe grătar.",
+        "en": "Classic shawarma loaded with melted cheese and cheddar sauce, toasted on the grill."
+      },
+      "nutrition": { "weight": 500, "kcal": 960, "protein": 46, "carbs": 84, "fat": 46 },
+      "allergens": ["gluten", "egg", "milk"]
+    },
+    {
+      "id": "shawarma-xxl", "category": "shawarma", "icon": "🌯", "price": 36,
+      "meatChoice": true, "extras": true,
+      "name": { "ro": "Shaorma XXL", "en": "XXL Shawarma" },
+      "description": {
+        "ro": "Porție dublă de carne în lipie mare, pentru foame serioasă.",
+        "en": "Double meat in a large flatbread, for a serious appetite."
+      },
+      "nutrition": { "weight": 650, "kcal": 1150, "protein": 62, "carbs": 105, "fat": 50 },
+      "allergens": ["gluten", "egg", "milk"]
+    },
+    {
+      "id": "shawarma-plate", "category": "shawarma", "icon": "🍽️", "price": 34,
+      "meatChoice": true, "extras": true,
+      "name": { "ro": "Shaorma la farfurie", "en": "Shawarma Plate" },
+      "description": {
+        "ro": "Carne la rotisor servită cu cartofi prăjiți, salată, lipie și sosuri separate.",
+        "en": "Spit-roasted meat served with fries, salad, flatbread and sauces on the side."
+      },
+      "nutrition": { "weight": 600, "kcal": 920, "protein": 48, "carbs": 88, "fat": 40 },
+      "allergens": ["gluten", "egg", "milk"]
+    },
+    {
+      "id": "doner-kebab", "category": "kebab", "icon": "🥙", "price": 27, "popular": true,
+      "meatChoice": true, "extras": true,
+      "name": { "ro": "Döner Kebab în pită", "en": "Döner Kebab in Pita" },
+      "description": {
+        "ro": "Pită turcească pufoasă umplută cu carne döner, salată, ceapă roșie și sos de iaurt.",
+        "en": "Fluffy Turkish pita filled with döner meat, salad, red onion and yogurt sauce."
+      },
+      "nutrition": { "weight": 420, "kcal": 720, "protein": 40, "carbs": 70, "fat": 30 },
+      "allergens": ["gluten", "milk", "sesame"]
+    },
+    {
+      "id": "adana-kebab", "category": "kebab", "icon": "🍢", "price": 38,
+      "name": { "ro": "Adana Kebab", "en": "Adana Kebab" },
+      "description": {
+        "ro": "Frigărui din carne tocată de berbecuț și vită, condimentată picant, cu orez bulgur, ardei copt și lipie.",
+        "en": "Spicy minced lamb & beef skewers with bulgur rice, roasted pepper and flatbread."
+      },
+      "nutrition": { "weight": 480, "kcal": 890, "protein": 44, "carbs": 68, "fat": 48 },
+      "allergens": ["gluten", "milk"]
+    },
+    {
+      "id": "iskender-kebab", "category": "kebab", "icon": "🍛", "price": 42,
+      "meatChoice": true,
+      "name": { "ro": "Iskender Kebab", "en": "Iskender Kebab" },
+      "description": {
+        "ro": "Felii de döner pe bucăți de pită, cu sos de roșii, unt topit și iaurt.",
+        "en": "Sliced döner over pita pieces with tomato sauce, melted butter and yogurt."
+      },
+      "nutrition": { "weight": 520, "kcal": 980, "protein": 50, "carbs": 72, "fat": 54 },
+      "allergens": ["gluten", "milk"]
+    },
+    {
+      "id": "cheesy-box", "category": "cheesebox", "icon": "🧀", "price": 29, "popular": true,
+      "meatChoice": true, "extras": true,
+      "name": { "ro": "Cheesy Box", "en": "Cheesy Box" },
+      "description": {
+        "ro": "Cutie cu cartofi prăjiți, carne la rotisor, cașcaval topit, sos cheddar și sos de usturoi.",
+        "en": "A box of fries topped with spit-roasted meat, melted cheese, cheddar sauce and garlic sauce."
+      },
+      "nutrition": { "weight": 500, "kcal": 1020, "protein": 42, "carbs": 78, "fat": 58 },
+      "allergens": ["egg", "milk"]
+    },
+    {
+      "id": "cheesy-box-xl", "category": "cheesebox", "icon": "📦", "price": 38,
+      "meatChoice": true, "extras": true,
+      "name": { "ro": "Cheesy Box XL", "en": "Cheesy Box XL" },
+      "description": {
+        "ro": "Varianta mare: mai multă carne, mai mult cașcaval, perfectă de împărțit.",
+        "en": "The big one: more meat, more cheese — perfect for sharing."
+      },
+      "nutrition": { "weight": 750, "kcal": 1480, "protein": 64, "carbs": 112, "fat": 84 },
+      "allergens": ["egg", "milk"]
+    },
+    {
+      "id": "fries", "category": "sides", "icon": "🍟", "price": 10,
+      "name": { "ro": "Cartofi prăjiți", "en": "French Fries" },
+      "description": { "ro": "Porție de cartofi prăjiți crocanți, cu sare.", "en": "Crispy salted french fries." },
+      "nutrition": { "weight": 200, "kcal": 480, "protein": 6, "carbs": 62, "fat": 23 },
+      "allergens": []
+    },
+    {
+      "id": "cheddar-fries", "category": "sides", "icon": "🍟", "price": 14,
+      "name": { "ro": "Cartofi cu cheddar", "en": "Cheddar Fries" },
+      "description": { "ro": "Cartofi prăjiți cu sos cald de cheddar.", "en": "Fries smothered in warm cheddar sauce." },
+      "nutrition": { "weight": 250, "kcal": 620, "protein": 11, "carbs": 64, "fat": 35 },
+      "allergens": ["milk"]
+    },
+    {
+      "id": "hummus", "category": "sides", "icon": "🫘", "price": 15,
+      "name": { "ro": "Humus cu pită", "en": "Hummus with Pita" },
+      "description": { "ro": "Humus cremos cu ulei de măsline, boia și pită caldă.", "en": "Creamy hummus with olive oil, paprika and warm pita." },
+      "nutrition": { "weight": 250, "kcal": 450, "protein": 14, "carbs": 52, "fat": 20 },
+      "allergens": ["gluten", "sesame"]
+    },
+    {
+      "id": "shepherd-salad", "category": "sides", "icon": "🥗", "price": 14,
+      "name": { "ro": "Salată Çoban", "en": "Shepherd Salad" },
+      "description": { "ro": "Roșii, castraveți, ardei, ceapă, pătrunjel, ulei de măsline și lămâie.", "en": "Tomatoes, cucumber, peppers, onion, parsley, olive oil and lemon." },
+      "nutrition": { "weight": 250, "kcal": 160, "protein": 3, "carbs": 12, "fat": 11 },
+      "allergens": []
+    },
+    {
+      "id": "baklava-pistachio", "category": "desserts", "icon": "🍯", "price": 16, "popular": true,
+      "name": { "ro": "Baklava cu fistic (4 buc)", "en": "Pistachio Baklava (4 pcs)" },
+      "description": { "ro": "Foi subțiri de aluat cu fistic, însiropate cu sirop de zahăr.", "en": "Thin layers of pastry with pistachio, soaked in syrup." },
+      "nutrition": { "weight": 120, "kcal": 520, "protein": 9, "carbs": 58, "fat": 29 },
+      "allergens": ["gluten", "nuts", "milk"]
+    },
+    {
+      "id": "baklava-walnut", "category": "desserts", "icon": "🍯", "price": 14,
+      "name": { "ro": "Baklava cu nucă (4 buc)", "en": "Walnut Baklava (4 pcs)" },
+      "description": { "ro": "Baklava tradițională cu nucă și sirop.", "en": "Traditional baklava with walnuts and syrup." },
+      "nutrition": { "weight": 120, "kcal": 500, "protein": 8, "carbs": 56, "fat": 28 },
+      "allergens": ["gluten", "nuts", "milk"]
+    },
+    {
+      "id": "kunefe", "category": "desserts", "icon": "🧁", "price": 22,
+      "name": { "ro": "Künefe", "en": "Künefe" },
+      "description": { "ro": "Kadaif crocant cu brânză dulce topită, sirop și fistic, servit cald.", "en": "Crispy kadaif with melted sweet cheese, syrup and pistachio, served warm." },
+      "nutrition": { "weight": 180, "kcal": 610, "protein": 14, "carbs": 70, "fat": 30 },
+      "allergens": ["gluten", "nuts", "milk"]
+    },
+    {
+      "id": "sutlac", "category": "desserts", "icon": "🍮", "price": 12,
+      "name": { "ro": "Sütlaç", "en": "Sütlaç (Rice Pudding)" },
+      "description": { "ro": "Budincă turcească de orez la cuptor, cu scorțișoară.", "en": "Oven-baked Turkish rice pudding with cinnamon." },
+      "nutrition": { "weight": 200, "kcal": 290, "protein": 8, "carbs": 46, "fat": 8 },
+      "allergens": ["milk"]
+    },
+    {
+      "id": "ayran", "category": "drinks", "icon": "🥛", "price": 7, "popular": true,
+      "name": { "ro": "Ayran", "en": "Ayran" },
+      "description": { "ro": "Băutură tradițională din iaurt, apă și sare. 300 ml.", "en": "Traditional yogurt drink with water and salt. 300 ml." },
+      "nutrition": { "weight": 300, "kcal": 110, "protein": 5, "carbs": 7, "fat": 6 },
+      "allergens": ["milk"]
+    },
+    {
+      "id": "cola", "category": "drinks", "icon": "🥤", "price": 8,
+      "name": { "ro": "Coca-Cola 500 ml", "en": "Coca-Cola 500 ml" },
+      "description": { "ro": "Băutură răcoritoare carbogazoasă.", "en": "Carbonated soft drink." },
+      "nutrition": { "weight": 500, "kcal": 210, "protein": 0, "carbs": 53, "fat": 0 },
+      "allergens": []
+    },
+    {
+      "id": "fanta", "category": "drinks", "icon": "🥤", "price": 8,
+      "name": { "ro": "Fanta 500 ml", "en": "Fanta 500 ml" },
+      "description": { "ro": "Băutură răcoritoare cu portocale.", "en": "Orange soft drink." },
+      "nutrition": { "weight": 500, "kcal": 190, "protein": 0, "carbs": 47, "fat": 0 },
+      "allergens": []
+    },
+    {
+      "id": "water", "category": "drinks", "icon": "💧", "price": 6,
+      "name": { "ro": "Apă plată 500 ml", "en": "Still Water 500 ml" },
+      "description": { "ro": "Apă minerală naturală necarbogazoasă.", "en": "Natural still mineral water." },
+      "nutrition": { "weight": 500, "kcal": 0, "protein": 0, "carbs": 0, "fat": 0 },
+      "allergens": []
+    },
+    {
+      "id": "turkish-tea", "category": "drinks", "icon": "🍵", "price": 5,
+      "name": { "ro": "Ceai turcesc", "en": "Turkish Tea" },
+      "description": { "ro": "Ceai negru turcesc servit în pahar lalea.", "en": "Black Turkish tea served in a tulip glass." },
+      "nutrition": { "weight": 150, "kcal": 2, "protein": 0, "carbs": 0, "fat": 0 },
+      "allergens": []
+    },
+    {
+      "id": "turkish-coffee", "category": "drinks", "icon": "☕", "price": 9,
+      "name": { "ro": "Cafea turcească", "en": "Turkish Coffee" },
+      "description": { "ro": "Cafea fiartă în ibric, servită cu rahat.", "en": "Coffee brewed in a cezve, served with Turkish delight." },
+      "nutrition": { "weight": 80, "kcal": 45, "protein": 0, "carbs": 9, "fat": 0 },
+      "allergens": []
+    }
+  ]
+}
