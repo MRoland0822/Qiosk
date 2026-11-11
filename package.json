@@ -7,19 +7,34 @@
     "start": "electron .",
     "dev": "electron . --windowed",
     "test": "node --test",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "ui:check": "node scripts/ui-check.js"
   },
   "license": "MIT",
   "devDependencies": {
     "electron": "^45.0.0",
-    "electron-builder": "^26.0.0"
+    "electron-builder": "^26.0.0",
+    "playwright-core": "^1.56.1"
   },
   "build": {
     "appId": "com.qiosk.kiosk",
     "productName": "Qiosk",
-    "files": ["main.js", "preload.js", "src/**", "renderer/**", "data/**", "config.json"],
-    "win": { "target": "nsis" },
-    "linux": { "target": "AppImage" },
-    "mac": { "target": "dmg" }
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**",
+      "renderer/**",
+      "data/**",
+      "config.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "mac": {
+      "target": "dmg"
+    }
   }
 }

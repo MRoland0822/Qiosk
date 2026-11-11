@@ -30,7 +30,8 @@ let menu;
 let terminal;
 
 function ordersDir() {
-  const dir = config.ordersDir || 'orders';
+  // QIOSK_ORDERS_DIR lets tools (e.g. scripts/ui-check.js) write to a throwaway folder.
+  const dir = process.env.QIOSK_ORDERS_DIR || config.ordersDir || 'orders';
   if (path.isAbsolute(dir)) return dir;
   // Relative paths: next to the project when running from source,
   // otherwise in the user's Documents folder (the install dir may be read-only).

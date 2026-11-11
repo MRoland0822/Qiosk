@@ -102,6 +102,7 @@ npm install
 npm start        # full-screen kiosk mode
 npm run dev      # in a normal window, for testing
 npm test         # checks prices, order files and the terminal drivers
+npm run ui:check # renders every screen at 5 kiosk sizes and audits the UI
 ```
 
 To leave kiosk mode press **Ctrl + Shift + Q**.
@@ -137,6 +138,19 @@ In an installed app you can put your own `config.json` or `menu.json` next to th
 `.exe`, and it will be used instead of the built-in one. In the installed app,
 relative `ordersDir` paths go to `Documents/Qiosk/`.
 
+## Claude Code skills (for future changes)
+
+The repo includes three Claude Code skills in `.claude/skills/`. Claude Code loads
+them automatically when working on this project:
+
+- **kiosk-design-system**: the look (colours, type, spacing, components), so new
+  screens match.
+- **kiosk-ux-rules**: rules for a standing touch kiosk (reach, 48px touch targets,
+  ♿ mode, flow, payment safety).
+- **kiosk-ui-check**: runs `npm run ui:check`, which opens every screen at 5 screen
+  sizes in RO, EN and ♿ mode, saves screenshots to `ui-check/`, and reports buttons
+  that are too small, low contrast, text that doesn't fit and missing translations.
+
 ## Project layout
 
 ```
@@ -149,4 +163,6 @@ renderer/           The kiosk screen (HTML, CSS, JS, translations)
 data/menu.json      The menu
 config.json         Settings
 test/               Automated tests
+scripts/ui-check.js UI audit at all kiosk screen sizes
+.claude/skills/     Claude Code skills for design / UX work
 ```
