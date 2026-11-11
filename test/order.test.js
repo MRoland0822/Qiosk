@@ -70,3 +70,22 @@ test('empty or invalid orders write nothing', () => {
   assert.throws(() => writeOrderFiles(dir, menu, [{ productId: 'ayran', qty: 1 }, { productId: 'bad', qty: 1 }]));
   assert.deepStrictEqual(fs.readdirSync(dir), []);
 });
+
+test('card flow: total file first, products file only after payment', () => {
+  const { createOrder, confirmOrder } = require('../src/orderWriter');
+  const dir = tmpDir();
+  const order = createOrder(dir, menu, [{ productId: 'shawarma', meatId: 'beef', qty: 1 }]);
+  assert.strictEqual(fs.readFileSync(order.totalFile, 'utf8'), '30.00\n');
+  assert.ok(!fs.existsSync(order.productsFile), 'kitchen must not see an unpaid order');
+  confirmOrder(order);
+  assert.strictEqual(fs.readFileSync(order.productsFile, 'utf8'), '1 x Shawarma (Beef)\n');
+});
+
+test('cancelled order removes the payment request and keeps its number used', () => {
+  const { createOrder, cancelOrder } = require('../src/orderWriter');
+  const dir = tmpDir();
+  const order = createOrder(dir, menu, [{ productId: 'ayran', qty: 1 }]);
+  cancelOrder(order);
+  assert.ok(!fs.existsSync(order.totalFile));
+  assert.strictEqual(createOrder(dir, menu, [{ productId: 'ayran', qty: 1 }]).orderNumber, 2);
+});

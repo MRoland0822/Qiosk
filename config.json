@@ -4,5 +4,13 @@
   "fileLanguage": "en",
   "currency": "lei",
   "kiosk": true,
-  "idleTimeoutSeconds": 90
+  "idleTimeoutSeconds": 90,
+  "payment": {
+    "card": true,
+    "cash": true,
+    "terminal": "simulator",
+    "timeoutSeconds": 120,
+    "simulatorDelaySeconds": 4,
+    "simulatorOutcome": "approve"
+  }
 }

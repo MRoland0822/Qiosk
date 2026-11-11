@@ -5,11 +5,18 @@
  *   order-0001-total.txt     -> the amount to pay, e.g. "57.00"
  *   order-0001-products.txt  -> one line per product, e.g. "1 x Shawarma (Chicken)"
  *
+ * The order happens in two steps:
+ *   1. createOrder()   writes the TOTAL file. This is the payment request: the
+ *                      card terminal (or the cashier) charges this amount.
+ *   2. confirmOrder()  writes the PRODUCTS file once the order is paid by card or
+ *                      the customer chose to pay at the counter. The products file
+ *                      appearing means "make this order".
+ *   cancelOrder()      removes the total file if the customer gives up, so an
+ *                      unpaid, abandoned order never reaches the kitchen.
+ *
  * The total is recomputed here from the menu (never trusted from the UI).
  * Each file is written to a temp name first and then renamed, so another
- * program watching the folder never reads a half-written file. The products
- * file is written first and the total file last, so the appearance of the
- * total file means the order is complete.
+ * program watching the folder never reads a half-written file.
  */
 const fs = require('fs');
 const path = require('path');
@@ -26,8 +33,8 @@ function nextOrderNumber(dir) {
     last = parseInt(fs.readFileSync(counterFile, 'utf8'), 10) || 0;
   } catch (_) { /* first order */ }
   let next = last + 1;
-  // Never overwrite an existing order, even if the counter file was deleted.
-  while (fs.existsSync(path.join(dir, `order-${pad(next)}-total.txt`))) next++;
+  // Never reuse a number, even if the counter file was deleted.
+  while (['total', 'products'].some((k) => fs.existsSync(path.join(dir, `order-${pad(next)}-${k}.txt`)))) next++;
   fs.writeFileSync(counterFile, String(next));
   return next;
 }
@@ -55,13 +62,10 @@ function mergeLines(lines) {
 }
 
 /**
- * @param {string} dir         folder where the files are written (created if missing)
- * @param {object} menu        parsed data/menu.json
- * @param {Array}  lines       cart lines from the UI
- * @param {object} [opts]      { lang: 'en' | 'ro' }
- * @returns {{orderNumber:number, total:string, totalFile:string, productsFile:string, products:string[]}}
+ * Step 1: validate the cart, give it a number and write the total file.
+ * @returns {{orderNumber:number, total:string, products:string[], totalFile:string, productsFile:string, dir:string}}
  */
-function writeOrderFiles(dir, menu, lines, opts = {}) {
+function createOrder(dir, menu, lines, opts = {}) {
   if (!Array.isArray(lines) || lines.length === 0) throw new Error('The order is empty');
   const lang = opts.lang || 'en';
 
@@ -74,13 +78,39 @@ function writeOrderFiles(dir, menu, lines, opts = {}) {
   fs.mkdirSync(dir, { recursive: true });
   const orderNumber = nextOrderNumber(dir);
   const base = path.join(dir, `order-${pad(orderNumber)}`);
-  const productsFile = `${base}-products.txt`;
-  const totalFile = `${base}-total.txt`;
-
-  writeAtomic(productsFile, products.join('\n') + '\n');
-  writeAtomic(totalFile, total + '\n');
-
-  return { orderNumber, total, totalFile, productsFile, products };
+  const order = {
+    dir,
+    orderNumber,
+    total,
+    products,
+    totalFile: `${base}-total.txt`,
+    productsFile: `${base}-products.txt`,
+    paymentFile: `${base}-payment.txt`,
+  };
+  writeTotal(order);
+  return order;
 }
 
-module.exports = { writeOrderFiles, mergeLines };
+/** (Re)write the total file — also used to ask the terminal to try again. */
+function writeTotal(order) {
+  writeAtomic(order.totalFile, order.total + '\n');
+}
+
+/** Step 2: the order is paid (or will be paid at the counter) — write the products file. */
+function confirmOrder(order) {
+  writeAtomic(order.productsFile, order.products.join('\n') + '\n');
+}
+
+/** The customer gave up before paying: remove the payment request. */
+function cancelOrder(order) {
+  for (const f of [order.totalFile, order.paymentFile]) fs.rmSync(f, { force: true });
+}
+
+/** Both steps at once (used for "pay at the counter" and in tests). */
+function writeOrderFiles(dir, menu, lines, opts = {}) {
+  const order = createOrder(dir, menu, lines, opts);
+  confirmOrder(order);
+  return order;
+}
+
+module.exports = { createOrder, writeTotal, confirmOrder, cancelOrder, writeOrderFiles, mergeLines };

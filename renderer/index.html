@@ -59,45 +59,93 @@
           <h2 class="category-title" id="category-title"></h2>
           <div class="product-grid" id="product-grid"></div>
         </main>
+        <aside class="order-panel" id="order-panel">
+          <div class="panel-head">
+            <h2 data-i18n="yourOrder"></h2>
+            <span class="panel-count" id="panel-count">0</span>
+          </div>
+          <div class="panel-empty" id="panel-empty">
+            <span class="panel-empty-icon">🛒</span>
+            <p data-i18n="emptyCart"></p>
+            <small data-i18n="emptyHint"></small>
+          </div>
+          <div class="panel-list" id="panel-list"></div>
+          <div class="panel-foot">
+            <div class="summary-row"><span data-i18n="kcalTotal"></span><span id="panel-kcal"></span></div>
+            <div class="summary-row total"><span data-i18n="total"></span><span id="panel-total"></span></div>
+            <button class="btn btn-primary btn-large btn-block" data-action="checkout" id="btn-checkout" data-i18n="checkout"></button>
+          </div>
+        </aside>
       </div>
-      <footer class="cart-bar" id="cart-bar">
-        <div class="cart-bar-info">
-          <span class="cart-count" id="cart-count">0</span>
-          <div>
-            <div class="cart-bar-label" data-i18n="yourOrder"></div>
-            <div class="cart-bar-total" id="cart-bar-total"></div>
+    </section>
+
+    <!-- 4. Payment method -->
+    <section id="screen-payment" class="screen">
+      <header class="topbar">
+        <button class="btn btn-ghost small" data-action="back-to-menu" data-i18n="back"></button>
+        <h2 class="topbar-title" data-i18n="howPay"></h2>
+        <span class="topbar-spacer"></span>
+      </header>
+      <div class="pay-content">
+        <p class="pay-amount-label" data-i18n="total"></p>
+        <div class="pay-amount" id="pay-amount"></div>
+        <div class="pay-options">
+          <button class="pay-card" data-pay="card" id="pay-opt-card">
+            <span class="pay-icon">💳</span>
+            <span class="pay-title" data-i18n="payCard"></span>
+            <span class="pay-sub" data-i18n="payCardSub"></span>
+          </button>
+          <button class="pay-card" data-pay="cash" id="pay-opt-cash">
+            <span class="pay-icon">💵</span>
+            <span class="pay-title" data-i18n="payCounter"></span>
+            <span class="pay-sub" data-i18n="payCounterSub"></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Card terminal -->
+    <section id="screen-card" class="screen">
+      <div class="card-content">
+        <div class="card-amount"><span data-i18n="amountToPay"></span> <strong id="card-amount"></strong></div>
+
+        <div class="card-state" id="card-waiting">
+          <div class="terminal-anim" aria-hidden="true">
+            <div class="terminal">
+              <div class="terminal-screen"><span id="terminal-amount"></span><span class="terminal-waves">)))</span></div>
+              <div class="terminal-keys"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="bank-card"><span class="chip"></span></div>
+          </div>
+          <h2 data-i18n="tapCard"></h2>
+          <p class="card-hint" data-i18n="tapCardSub"></p>
+          <div class="terminal-arrow">⬇</div>
+          <div class="spinner-row"><span class="spinner"></span><span data-i18n="waitingTerminal"></span></div>
+          <button class="btn btn-ghost" data-action="cancel-payment" data-i18n="cancelPayment"></button>
+        </div>
+
+        <div class="card-state" id="card-declined" hidden>
+          <div class="declined-icon">✕</div>
+          <h2 data-i18n="paymentFailed"></h2>
+          <p class="card-hint" id="card-declined-msg"></p>
+          <div class="declined-actions">
+            <button class="btn btn-primary btn-large" data-action="retry-card" data-i18n="tryAgain"></button>
+            <button class="btn btn-secondary btn-large" data-action="pay-counter-instead" id="btn-counter-instead" data-i18n="payCounter"></button>
+            <button class="btn btn-ghost" data-action="cancel-payment" data-i18n="backToOrder"></button>
           </div>
         </div>
-        <button class="btn btn-primary btn-large" data-action="review" id="btn-review" data-i18n="viewOrder"></button>
-      </footer>
+      </div>
     </section>
 
-    <!-- 4. Review order -->
-    <section id="screen-review" class="screen">
-      <header class="topbar">
-        <button class="btn btn-ghost small" data-action="back-to-menu" data-i18n="addMore"></button>
-        <h2 class="topbar-title" data-i18n="reviewTitle"></h2>
-        <span></span>
-      </header>
-      <div class="review-list" id="review-list"></div>
-      <footer class="review-footer">
-        <div class="review-summary">
-          <div class="summary-row"><span data-i18n="kcalTotal"></span><span id="review-kcal"></span></div>
-          <div class="summary-row total"><span data-i18n="total"></span><span id="review-total"></span></div>
-        </div>
-        <button class="btn btn-primary btn-huge" data-action="pay" id="btn-pay" data-i18n="payNow"></button>
-      </footer>
-    </section>
-
-    <!-- 5. Confirmation -->
+    <!-- 6. Confirmation -->
     <section id="screen-done" class="screen">
       <div class="done-content">
         <div class="done-check">✓</div>
-        <h2 data-i18n="thankYou"></h2>
+        <h2 id="done-title"></h2>
         <p class="done-label" data-i18n="orderNumber"></p>
         <div class="order-number" id="done-number"></div>
-        <p class="done-pay"><span data-i18n="amountToPay"></span> <strong id="done-total"></strong></p>
-        <p class="done-hint" data-i18n="doneHint"></p>
+        <p class="done-pay"><span id="done-pay-label"></span> <strong id="done-total"></strong></p>
+        <p class="done-hint" id="done-hint"></p>
         <button class="btn btn-primary btn-large" data-action="finish" data-i18n="newOrder"></button>
       </div>
     </section>

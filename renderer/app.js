@@ -15,7 +15,9 @@
     category: 'popular',
     cart: [],       // { uid, productId, meatId, extraIds, qty }
     modal: null,    // { productId, meatId, extraIds, qty, editingUid }
-    placing: false,
+    busy: false,
+    openOrder: null, // { orderNumber, total } once the total file is written
+    lastAdded: null,
   };
   let uidSeq = 0;
 
@@ -49,8 +51,7 @@
     $$('.lang-btn[data-lang]').forEach((b) => b.classList.toggle('active', b.dataset.lang === state.lang));
     $$('[data-lang-toggle]').forEach((b) => { b.textContent = state.lang === 'ro' ? '🇬🇧 EN' : '🇷🇴 RO'; });
     renderMenu();
-    renderCartBar();
-    if (state.screen === 'review') renderReview();
+    renderPanel();
     if (state.modal) renderModal();
     updateDiningBadge();
   }
@@ -160,92 +161,166 @@
       const sameKey = (l) => l.productId === line.productId && l.meatId === line.meatId
         && [...l.extraIds].sort().join() === [...line.extraIds].sort().join();
       const same = state.cart.find(sameKey);
-      if (same) same.qty = Math.min(99, same.qty + line.qty);
-      else state.cart.push(Object.assign({ uid: ++uidSeq }, line));
+      if (same) {
+        same.qty = Math.min(99, same.qty + line.qty);
+        state.lastAdded = same.uid;
+      } else {
+        state.cart.push(Object.assign({ uid: ++uidSeq }, line));
+        state.lastAdded = uidSeq;
+      }
       toast(`✓ ${T('added')}`);
     }
     closeModal();
     renderMenu();
-    renderCartBar();
-    if (state.screen === 'review') renderReview();
+    renderPanel();
   }
 
-  // ---------- cart ----------
-  function renderCartBar() {
+  // ---------- side panel (order) ----------
+  function renderPanel() {
     const count = state.cart.reduce((s, l) => s + l.qty, 0);
-    $('#cart-count').textContent = count;
-    $('#cart-bar-total').textContent = count ? money(Pricing.orderTotal(menu, cartLines())) : T('emptyCart');
-    $('#btn-review').disabled = count === 0;
-    $('#cart-bar').classList.toggle('has-items', count > 0);
-  }
+    $('#panel-count').textContent = count;
+    $('#panel-empty').hidden = count > 0;
+    $('#btn-checkout').disabled = count === 0;
+    $('#order-panel').classList.toggle('has-items', count > 0);
 
-  function renderReview() {
-    if (!state.cart.length) { showScreen('menu'); return; }
-    $('#review-list').innerHTML = state.cart.map((l) => {
+    $('#panel-list').innerHTML = state.cart.map((l) => {
       const p = product(l.productId);
       const meat = l.meatId && menu.meats.find((x) => x.id === l.meatId);
       const extras = l.extraIds.map((id) => tr(menu.extras.find((e) => e.id === id).name));
+      const editable = p.meatChoice || p.extras;
       return `
-      <div class="review-item">
-        <span class="review-icon">${esc(p.icon)}</span>
-        <div class="review-info">
-          <div class="review-name">${esc(tr(p.name))}</div>
-          ${meat ? `<div class="review-opt">🥩 ${esc(tr(meat.name))}</div>` : ''}
-          ${extras.length ? `<div class="review-opt">➕ ${esc(extras.join(', '))}</div>` : ''}
-          <div class="review-actions">
-            ${p.meatChoice || p.extras ? `<button class="link-btn" data-edit="${l.uid}">✎ ${esc(T('edit'))}</button>` : ''}
-            <button class="link-btn danger" data-remove="${l.uid}">🗑 ${esc(T('remove'))}</button>
+      <div class="panel-item ${l.uid === state.lastAdded ? 'flash' : ''}">
+        <button class="panel-item-main" ${editable ? `data-edit="${l.uid}"` : 'disabled'}>
+          <span class="panel-icon">${esc(p.icon)}</span>
+          <span class="panel-info">
+            <span class="panel-name">${esc(tr(p.name))}</span>
+            ${meat ? `<span class="panel-opt">${esc(tr(meat.name))}</span>` : ''}
+            ${extras.length ? `<span class="panel-opt">+ ${esc(extras.join(', '))}</span>` : ''}
+            ${editable ? `<span class="panel-edit">✎ ${esc(T('edit'))}</span>` : ''}
+          </span>
+        </button>
+        <div class="panel-item-side">
+          <span class="panel-price">${esc(money(Pricing.lineTotal(menu, l)))}</span>
+          <div class="qty qty-sm">
+            <button class="qty-btn" data-line-minus="${l.uid}" aria-label="${esc(T('remove'))}">${l.qty === 1 ? '🗑' : '−'}</button>
+            <span>${l.qty}</span>
+            <button class="qty-btn" data-line-plus="${l.uid}" aria-label="+">+</button>
           </div>
         </div>
-        <div class="qty">
-          <button class="qty-btn" data-line-minus="${l.uid}">−</button>
-          <span>${l.qty}</span>
-          <button class="qty-btn" data-line-plus="${l.uid}">+</button>
-        </div>
-        <div class="review-price">${esc(money(Pricing.lineTotal(menu, l)))}</div>
       </div>`;
     }).join('');
 
     const kcal = state.cart.reduce((s, l) => s + Pricing.lineNutrition(menu, l).kcal * l.qty, 0);
-    $('#review-kcal').textContent = `${kcal} kcal`;
-    $('#review-total').textContent = money(Pricing.orderTotal(menu, cartLines()));
+    $('#panel-kcal').textContent = `${kcal} kcal`;
+    $('#panel-total').textContent = money(count ? Pricing.orderTotal(menu, cartLines()) : 0);
+    state.lastAdded = null;
   }
 
   function changeLineQty(uid, delta) {
     const line = state.cart.find((l) => l.uid === uid);
     if (!line) return;
-    line.qty += delta;
+    line.qty = Math.min(99, line.qty + delta);
     if (line.qty < 1) state.cart = state.cart.filter((l) => l.uid !== uid);
-    if (line.qty > 99) line.qty = 99;
-    renderCartBar();
+    renderPanel();
     renderMenu();
-    renderReview();
   }
 
-  async function pay() {
-    if (state.placing || !state.cart.length) return;
-    state.placing = true;
-    $('#btn-pay').disabled = true;
+  // ---------- payment ----------
+  // An "open" order has its total file written but is not paid/confirmed yet.
+  async function cancelOpenOrder() {
+    if (!state.openOrder) return;
+    const n = state.openOrder.orderNumber;
+    state.openOrder = null;
+    try { await window.kiosk.cancelOrder(n); } catch (err) { console.error(err); }
+  }
+
+  function goToCheckout() {
+    if (!state.cart.length) return;
+    const total = money(Pricing.orderTotal(menu, cartLines()));
+    $('#pay-amount').textContent = total;
+    const { card, cash } = config.payment;
+    $('#pay-opt-card').hidden = !card;
+    $('#pay-opt-cash').hidden = !cash;
+    if (card && !cash) return startPayment('card');
+    if (cash && !card) return startPayment('cash');
+    showScreen('payment');
+  }
+
+  async function ensureOpenOrder() {
+    if (state.openOrder) return state.openOrder;
+    const res = await window.kiosk.createOrder(cartLines());
+    if (!res || !res.ok) throw new Error((res && res.error) || 'create failed');
+    state.openOrder = { orderNumber: res.orderNumber, total: res.total };
+    return state.openOrder;
+  }
+
+  async function startPayment(method) {
+    if (state.busy) return;
+    state.busy = true;
     try {
-      const res = await window.kiosk.placeOrder(cartLines());
-      if (!res || !res.ok) throw new Error(res && res.error);
-      $('#done-number').textContent = res.orderNumber;
-      $('#done-total').textContent = `${res.total} ${config.currency}`;
-      showScreen('done');
-      clearTimeout(pay.finishTimer);
-      pay.finishTimer = setTimeout(resetAll, 20000);
+      const order = await ensureOpenOrder();
+      if (method === 'cash') return await payAtCounter();
+      const amount = `${order.total} ${config.currency}`;
+      $('#card-amount').textContent = amount;
+      $('#terminal-amount').textContent = amount;
+      $('#card-waiting').hidden = false;
+      $('#card-declined').hidden = true;
+      $('#btn-counter-instead').hidden = !config.payment.cash;
+      showScreen('card');
+
+      const res = await window.kiosk.payCard(order.orderNumber);
+      if (state.screen !== 'card') return; // customer left meanwhile
+      if (!res || !res.ok) throw new Error((res && res.error) || 'payment error');
+      if (res.cancelled) return;
+      if (res.approved) {
+        state.openOrder = null;
+        showDone('card', res.orderNumber, res.total);
+      } else {
+        $('#card-declined-msg').textContent = res.message || '';
+        $('#card-waiting').hidden = true;
+        $('#card-declined').hidden = false;
+      }
     } catch (err) {
       console.error(err);
       toast(T('orderFailed'));
+      await cancelOpenOrder();
+      showScreen('menu');
     } finally {
-      state.placing = false;
-      $('#btn-pay').disabled = false;
+      state.busy = false;
     }
   }
 
+  async function payAtCounter() {
+    const res = await window.kiosk.payCash(state.openOrder.orderNumber);
+    if (!res || !res.ok) throw new Error((res && res.error) || 'cash failed');
+    state.openOrder = null;
+    showDone('cash', res.orderNumber, res.total);
+  }
+
+  async function cancelPayment() {
+    await cancelOpenOrder();
+    showScreen('menu'); // the cart is kept, the customer can change it or try again
+    resetIdle();
+  }
+
+  function showDone(method, orderNumber, total) {
+    const paid = method === 'card';
+    $('#done-title').textContent = paid ? T('paidTitle') : T('thankYou');
+    $('#done-pay-label').textContent = paid ? T('paidLabel') : T('counterLabel');
+    $('#done-hint').textContent = paid ? T('paidHint') : T('counterHint');
+    $('#done-number').textContent = orderNumber;
+    $('#done-total').textContent = `${total} ${config.currency}`;
+    $('#screen-done').classList.toggle('paid', paid);
+    showScreen('done');
+    clearTimeout(showDone.timer);
+    showDone.timer = setTimeout(resetAll, 20000);
+  }
+
   function resetAll() {
-    clearTimeout(pay.finishTimer);
+    clearTimeout(showDone.timer);
+    cancelOpenOrder();
     closeModal();
+    clearInterval(countdownTimer);
     $('#idle-modal').hidden = true;
     state.cart = [];
     state.dining = null;
@@ -261,7 +336,7 @@
   function resetIdle() {
     clearTimeout(idleTimer);
     if (!$('#idle-modal').hidden) return; // only the button closes the warning
-    if (state.screen === 'welcome' || state.screen === 'done') return;
+    if (['welcome', 'done', 'card'].includes(state.screen)) return;
     idleTimer = setTimeout(showIdleWarning, config.idleTimeoutSeconds * 1000);
   }
   function showIdleWarning() {
@@ -295,20 +370,25 @@
       return;
     }
     if (d.edit) { const l = state.cart.find((x) => x.uid === +d.edit); openProduct(l.productId, l.uid); return; }
-    if (d.remove) { changeLineQty(+d.remove, -999); return; }
+    if (d.pay) { startPayment(d.pay); return; }
     if (d.lineMinus) { changeLineQty(+d.lineMinus, -1); return; }
     if (d.linePlus) { changeLineQty(+d.linePlus, +1); return; }
 
     switch (d.action) {
       case 'start': showScreen('dining'); resetIdle(); break;
       case 'cancel': resetAll(); break;
-      case 'review': renderReview(); showScreen('review'); break;
-      case 'back-to-menu': showScreen('menu'); break;
+      case 'checkout': goToCheckout(); break;
+      case 'back-to-menu': cancelOpenOrder(); showScreen('menu'); break;
+      case 'cancel-payment': cancelPayment(); break;
+      case 'retry-card': startPayment('card'); break;
+      case 'pay-counter-instead':
+        state.busy = true;
+        payAtCounter().catch((err) => { console.error(err); toast(T('orderFailed')); }).finally(() => { state.busy = false; });
+        break;
       case 'close-modal': closeModal(); break;
       case 'qty-minus': state.modal.qty = Math.max(1, state.modal.qty - 1); renderModal(); break;
       case 'qty-plus': state.modal.qty = Math.min(99, state.modal.qty + 1); renderModal(); break;
       case 'add-to-order': addToOrder(); break;
-      case 'pay': pay(); break;
       case 'finish': resetAll(); break;
       case 'still-here':
         clearInterval(countdownTimer);
