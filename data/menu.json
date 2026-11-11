@@ -1,4 +1,10 @@
 {
+  "promo": {
+    "productId": "cheesy-box",
+    "title": { "ro": "Ai încercat Cheesy Box?", "en": "Tried the Cheesy Box yet?" },
+    "subtitle": { "ro": "Cartofi, carne la alegere și mult cașcaval topit. Merge perfect cu carne mixtă!", "en": "Fries, your choice of meat and loads of melted cheese. Perfect with mixed meat!" }
+  },
+
   "meats": [
     { "id": "chicken",      "name": { "ro": "Pui",              "en": "Chicken" },          "price": 0, "kcal": 0,   "protein": 0,  "fat": 0 },
     { "id": "beef",         "name": { "ro": "Vită",             "en": "Beef" },             "price": 4, "kcal": 45,  "protein": 2,  "fat": 5 },

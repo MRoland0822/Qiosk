@@ -18,6 +18,7 @@
     busy: false,
     openOrder: null, // { orderNumber, total } once the total file is written
     lastAdded: null,
+    access: false,  // accessibility mode: UI lowered into the bottom part of the screen
   };
   let uidSeq = 0;
 
@@ -54,6 +55,25 @@
     renderPanel();
     if (state.modal) renderModal();
     updateDiningBadge();
+    renderPromo();
+    renderAccess();
+  }
+
+  function renderPromo() {
+    const promo = menu.promo && product(menu.promo.productId);
+    $('#promo').hidden = !promo;
+    if (!promo) return;
+    $('#promo').dataset.product = promo.id;
+    $('#promo-icon').textContent = promo.icon;
+    $('#promo-title').textContent = tr(menu.promo.title);
+    $('#promo-sub').textContent = tr(menu.promo.subtitle);
+    $('#promo-cta').textContent = `${T('from')} ${money(promo.price)}`;
+  }
+
+  function renderAccess() {
+    document.body.classList.toggle('access', state.access);
+    $('#access-label').textContent = state.access ? T('accessOff') : T('accessOn');
+    $('#access-note-text').textContent = T('accessNote');
   }
 
   function updateDiningBadge() {
@@ -102,11 +122,13 @@
       : { productId, meatId: p.meatChoice ? menu.meats[0].id : null, extraIds: [], qty: 1, editingUid: null };
     renderModal();
     $('#product-modal').hidden = false;
+    document.body.classList.add('modal-open');
   }
 
   function closeModal() {
     state.modal = null;
     $('#product-modal').hidden = true;
+    document.body.classList.remove('modal-open');
   }
 
   function renderModal() {
@@ -326,6 +348,7 @@
     state.dining = null;
     state.category = 'popular';
     state.lang = 'ro'; // next customer starts in Romanian
+    state.access = false;
     showScreen('welcome');
     applyLanguage();
   }
@@ -377,6 +400,7 @@
     switch (d.action) {
       case 'start': showScreen('dining'); resetIdle(); break;
       case 'cancel': resetAll(); break;
+      case 'toggle-access': state.access = !state.access; renderAccess(); break;
       case 'checkout': goToCheckout(); break;
       case 'back-to-menu': cancelOpenOrder(); showScreen('menu'); break;
       case 'cancel-payment': cancelPayment(); break;

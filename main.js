@@ -40,9 +40,13 @@ function ordersDir() {
 
 function createWindow() {
   const kiosk = config.kiosk !== false && !windowed;
+  // --size=1080x1920 emulates a specific kiosk screen in windowed mode.
+  const sizeArg = process.argv.find((a) => a.startsWith('--size='));
+  const [width, height] = sizeArg ? sizeArg.slice(7).split('x').map(Number) : [608, 1080];
   const win = new BrowserWindow({
-    width: 1080,
-    height: 1920,
+    width,
+    height,
+    useContentSize: true,
     kiosk,
     fullscreen: kiosk,
     autoHideMenuBar: true,

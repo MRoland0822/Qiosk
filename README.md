@@ -25,6 +25,22 @@ and English.
 If nobody touches the screen for 90 seconds, it asks "Are you still there?" and then
 goes back to the start.
 
+## Screen size
+
+Kiosk screens differ (21.5" to 55", Full HD 1080×1920 or 4K 2160×3840, portrait or
+landscape), so the layout scales with the screen: everything looks the same, just
+bigger or sharper. Tested at 1080×1920, 2160×3840, 768×1366, 1280×1024 and
+1920×1080. Every button is at least 48 px, the usual minimum for touch.
+
+- **Tall portrait screens** (the usual standing kiosk): the top of the screen is
+  above most people's reach, so it shows a **promo banner** (set `promo` in
+  `menu.json`) and all the controls sit lower down.
+- **♿ Accessibility button** (bottom-left, always there): moves the whole
+  interface into the lower half of the screen for wheelchair users and children.
+  It switches off again for the next customer.
+- To preview a specific screen on a laptop: `npm run dev -- --size=1080x1920`
+  (without `--size` the window opens as a scaled-down portrait screen).
+
 ## The two files for every order
 
 | File | Contents | Written when |

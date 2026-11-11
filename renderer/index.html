@@ -53,6 +53,14 @@
           <button class="btn btn-ghost small" data-action="cancel" data-i18n="cancelOrder"></button>
         </div>
       </header>
+      <button class="promo" id="promo" hidden>
+        <span class="promo-icon" id="promo-icon"></span>
+        <span class="promo-text">
+          <span class="promo-title" id="promo-title"></span>
+          <span class="promo-sub" id="promo-sub"></span>
+        </span>
+        <span class="promo-cta" id="promo-cta"></span>
+      </button>
       <div class="menu-layout">
         <nav class="category-rail" id="category-rail"></nav>
         <main class="product-area">
@@ -196,6 +204,12 @@
       <button class="btn btn-primary btn-large" data-action="still-here" data-i18n="yesContinue"></button>
     </div>
   </div>
+
+  <!-- Accessibility: lowers the whole interface into reach (wheelchair users, children) -->
+  <button class="access-btn" data-action="toggle-access" id="access-btn">
+    <span class="access-icon">♿</span><span class="access-label" id="access-label"></span>
+  </button>
+  <div class="access-note" id="access-note" aria-hidden="true"><span>♿</span><span id="access-note-text"></span></div>
 
   <div class="toast" id="toast" hidden></div>
 
